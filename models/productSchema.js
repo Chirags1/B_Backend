@@ -7,7 +7,8 @@ const productSchema = new mongoose.Schema({
   productWastage: { type: String, required: true },
   buyingRate: { type: String, required: true },
   makingRate: { type: String, required: true },
-  buyingDate: { type: String },
+  buyingDate: { type: Date },
 });
 
 module.exports = mongoose.model("product", productSchema);
+///here in the product we have mentioned everything related to buy
