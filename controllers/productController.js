@@ -5,7 +5,11 @@ module.exports.add = async (req, res) => {
     // const {productName,productCategory,productWeight,productTunch,productWastage,buyingRate,makingRate,buyingDate}=req.body;
 
     const product = await productModel.create({ ...req.body });
+
     if (product) {
+      //         const p = await productModel.find().lean();
+      // findProduct= await ioredis.set("get-product",{p})
+
       return res.status(202).json({ message: "product added successfully" });
     } else {
       return res.status(400).json({ message: "product creation failed" });
@@ -18,7 +22,18 @@ module.exports.add = async (req, res) => {
 module.exports.allProduct = async (req, res) => {
   try {
     //  const {limit,page}={...req.body};
+    // const ioredis =new Redis()
+
+    // findProduct= await ioredis.get("get-product")
+    // if(findProduct){
+    //   return findProduct
+    // }else{
     const p = await productModel.find().lean();
+
+    // findProduct= await ioredis.set("get-product")
+
+    // }
+
     return res.json(p);
   } catch (err) {
     console.log(err);

@@ -3,23 +3,32 @@ const customerModel = require("../models/customerSchema");
 async function addCustomer(req, res) {
   try {
     const customer = await customerModel.create({ ...req.body });
-
     if (customer) {
       res.status(200).json({ message: "Customer added successfully" });
     } else {
       res.status(400).json({ message: "Customer creation failed " });
     }
   } catch (err) {
-    res.status(400).json({ message: "customer creation failed" });
+    res.status(400).json({ message: "customer creation failed", err });
   }
 }
 
 async function getCustomer(req, res) {
   try {
-    const customer = await customerModel.find().lean();
-    res.json(customer);
+    const { page, limit, search } = req.query;
+    const searchQuery = search
+      ? { customerName: { $regex: search, $options: "i" } } // filter by name
+      : {};
+    const customer = await customerModel
+      .find(searchQuery)
+      .skip((+page - 1) * +limit)
+      .limit(+limit);
+    res.json({ customer: customer, page: +page, limit: +limit });
   } catch (err) {
-    res.status(400).json({ message: "Error in fetching the customer" });
+    console.log(err);
+    res
+      .status(400)
+      .json({ message: "Error in fetching the customer", err: err });
   }
 }
 
